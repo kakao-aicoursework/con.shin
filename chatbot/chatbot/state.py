@@ -3,7 +3,7 @@ from pynecone.base import Base
 
 from chatbot.dataloader import EmbeddingDB
 from chatbot.llms import default_chain, with_docs_chain, parse_intent_chain, INTENT_LIST_TEMPLATE, code_example_chain
-
+from chatbot.history import load_conversation_history, log_user_message, log_bot_message
 embedding_db = EmbeddingDB()
 
 class Message(Base):
@@ -24,8 +24,9 @@ def read_prompt_template(file_path: str) -> str:
 
     return prompt_template
 
-def question_to_chatgpt(question: str) -> str:
+def question_to_chatgpt(question: str, conversation_id: str='fa1010') -> str:
     answer = ""
+    history_file = load_conversation_history(conversation_id)
     context = dict(input=question)
     context["intent_list"] = read_prompt_template(INTENT_LIST_TEMPLATE)
     intent = parse_intent_chain.run(context)
@@ -39,6 +40,9 @@ def question_to_chatgpt(question: str) -> str:
         answer = code_example_chain.run(context)
     else:
         answer = default_chain.run(context["input"])
+
+    log_user_message(history_file, question)
+    log_bot_message(history_file, answer)
 
     return answer
 
