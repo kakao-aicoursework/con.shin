@@ -8,7 +8,7 @@ from chatbot.state import Message, State
 def header():
     """Basic instructions to get started."""
     return pc.box(
-        pc.text("Assistance 🫶", font_size="2rem"),
+        pc.text("카카오 API 챗봇 서비스 🫶", font_size="2rem"),
         pc.text(
             "Please input something to find out.",
             margin_top="0.5rem",
@@ -75,5 +75,5 @@ def index():
 
 # Add state and page to the app.
 app = pc.App(state=State)
-app.add_page(index, title="카카오싱크 어시스트")
+app.add_page(index, title="카카오 API 챗봇 서비스")
 app.compile()

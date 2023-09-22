@@ -50,7 +50,11 @@ class State(pc.State):
     """The app state."""
     is_working: bool = False
     question: str = ""
-    messages: list[Message] = []
+    messages: list[Message] = [AssistMessage(
+                role='assist',
+                title='assist',
+                text='안녕하세요. 챗봇 서비스를 시작합니다 궁금하신 내용을 물어보세요.',
+            )]
     current_idx: int = 0
 
     @pc.var
