@@ -2,5 +2,5 @@
 포맷은 markdown 형식으로 해주세요.
 
 <question>
-{message}
+{input}
 </question>

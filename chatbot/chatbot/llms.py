@@ -1,13 +1,15 @@
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain, LLMChain
 from langchain.prompts.chat import ChatPromptTemplate
+import os 
 
-INTENT_PROMPT_TEMPLATE = '/datas/prompts/intent/prompt.txt'
-INTENT_LIST_TEMPLATE = '/datas/prompts/intent/list.txt'
-WITH_DOCS_PROMPT_TEMPLATE = '/datas/prompts/default.txt'
-CODE_EXAMPLE_PROMPT_TEMPLATE = '/datas/prompts/with_docs.txt'
 
-llm = ChatOpenAI(temperature=0, max_tokens=16384, model="gpt-3.5-turbo-16k")
+INTENT_PROMPT_TEMPLATE = f'{os.getcwd()}/datas/prompts/intent/prompt.txt'
+INTENT_LIST_TEMPLATE = f'{os.getcwd()}/datas/prompts/intent/list.txt'
+WITH_DOCS_PROMPT_TEMPLATE = f'{os.getcwd()}/datas/prompts/with_docs.txt'
+CODE_EXAMPLE_PROMPT_TEMPLATE = f'{os.getcwd()}/datas/prompts/code_example.txt'
+
+llm = ChatOpenAI(temperature=0, max_tokens=4096, model="gpt-3.5-turbo-16k")
 
 def _read_prompt_template(file_path: str) -> str:
     with open(file_path, "r") as f:

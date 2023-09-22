@@ -27,22 +27,20 @@ def read_prompt_template(file_path: str) -> str:
 def question_to_chatgpt(question: str) -> str:
     answer = ""
     context = dict(input=question)
-    intent = parse_intent_chain.run(
-        {
-            "intent_list": read_prompt_template(INTENT_LIST_TEMPLATE)
-        }
-    )
+    context["intent_list"] = read_prompt_template(INTENT_LIST_TEMPLATE)
+    intent = parse_intent_chain.run(context)
 
     if intent == "API 이해" or intent == "질문 답변":
         context["related_documents"] = embedding_db.get_page_contents(question)
         answer = with_docs_chain.run(context)
+
     elif intent == "버그 수정" or intent == "사용 예시":
         # Tool 사용해서 Web Search
         answer = code_example_chain.run(context)
     else:
-        answer = default_chain.run(context)
+        answer = default_chain.run(context["input"])
 
-    return answer["answer"]
+    return answer
 
 class State(pc.State):
     """The app state."""

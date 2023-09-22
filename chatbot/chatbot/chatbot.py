@@ -38,7 +38,7 @@ def assist():
     return pc.box(
         pc.input(
             placeholder="Text to Question",
-            on_change=State.set_question,
+            on_blur=State.set_question,
             margin_top="1rem",
             border_color="#eaeaef"
         ),

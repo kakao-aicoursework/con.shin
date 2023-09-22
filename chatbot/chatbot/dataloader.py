@@ -5,7 +5,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
 import os
 
-CHROMA_PERSIST_DIR = f'{os.getcwd()}/chatbot/datas/upload/chroma-persist'
+CHROMA_PERSIST_DIR = f'{os.getcwd()}/datas/upload/chroma-persist'
 CHROMA_COLLECTION_NAME = "dosu-bot"
 
 class EmbeddingDB:
