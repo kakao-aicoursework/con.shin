@@ -1,16 +1,15 @@
-"""Welcome to Reflex! This file outlines the steps to create a basic app."""
+"""Welcome to Pynecone! This file outlines the steps to create a basic app."""
 
-# Import reflex.
 # import openai
-import reflex as rx
+import pynecone as pc
 from chatbot.state import Message, State
 
 # Define views.
 def header():
     """Basic instructions to get started."""
-    return rx.box(
-        rx.text("Assistance 🫶", font_size="2rem"),
-        rx.text(
+    return pc.box(
+        pc.text("Assistance 🫶", font_size="2rem"),
+        pc.text(
             "Please input something to find out.",
             margin_top="0.5rem",
             color="#666",
@@ -19,13 +18,13 @@ def header():
 
 
 def message(message: Message):
-    return rx.box(
-        rx.text(
+    return pc.box(
+        pc.text(
             message.title, 
             font_weight="bold",
             font_size="2em",
         ),
-        rx.markdown(
+        pc.markdown(
             message.text
         ),
         width="100%",
@@ -36,14 +35,14 @@ def message(message: Message):
 
 
 def assist():
-    return rx.box(
-        rx.input(
+    return pc.box(
+        pc.input(
             placeholder="Text to Question",
             on_change=State.set_question,
             margin_top="1rem",
             border_color="#eaeaef"
         ),
-        rx.button(
+        pc.button(
             "Post", on_click=State.post, margin_top="1rem", align_item="right"
         )
     )
@@ -51,17 +50,17 @@ def assist():
 
 def index():
     """The main view."""
-    return rx.container(
+    return pc.container(
         header(),
-        rx.vstack(
-            rx.foreach(State.messages, message),
+        pc.vstack(
+            pc.foreach(State.messages, message),
             margin_top='2rem',
             spsacing='1rem',
             width="100%"
         ),
-        rx.cond(
+        pc.cond(
             State.is_working,
-            rx.spinner(
+            pc.spinner(
                 color="lightgreen",
                 thickness=5,
                 speed="1.5s",
@@ -75,6 +74,6 @@ def index():
 
 
 # Add state and page to the app.
-app = rx.App(state=State)
+app = pc.App(state=State)
 app.add_page(index, title="카카오싱크 어시스트")
 app.compile()

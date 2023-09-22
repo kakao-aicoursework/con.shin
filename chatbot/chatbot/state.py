@@ -1,9 +1,10 @@
-import reflex as rx
-from reflex.base import Base
+import pynecone as pc
+from pynecone.base import Base
 
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts.chat import ChatPromptTemplate
-from langchain.chains import LLMChain
+from chatbot.dataloader import EmbeddingDB
+from chatbot.llms import default_chain, with_docs_chain, parse_intent_chain, INTENT_LIST_TEMPLATE, code_example_chain
+
+embedding_db = EmbeddingDB()
 
 class Message(Base):
     role: str
@@ -24,25 +25,33 @@ def read_prompt_template(file_path: str) -> str:
     return prompt_template
 
 def question_to_chatgpt(question: str) -> str:
-    writer_llm = ChatOpenAI(temperature=1, max_tokens=8192, model='gpt-3.5-turbo-16k')
-    writer_prompt_template = ChatPromptTemplate.from_template(
-        template=read_prompt_template('project_data_카카오싱크.txt'))
-    writer_chain = LLMChain(llm=writer_llm, prompt=writer_prompt_template, output_key='output')
+    answer = ""
+    context = dict(input=question)
+    intent = parse_intent_chain.run(
+        {
+            "intent_list": read_prompt_template(INTENT_LIST_TEMPLATE)
+        }
+    )
 
-    result = writer_chain(dict(
-        question=question,
-    ))
+    if intent == "API 이해" or intent == "질문 답변":
+        context["related_documents"] = embedding_db.get_page_contents(question)
+        answer = with_docs_chain.run(context)
+    elif intent == "버그 수정" or intent == "사용 예시":
+        # Tool 사용해서 Web Search
+        answer = code_example_chain.run(context)
+    else:
+        answer = default_chain.run(context)
 
-    return result['output']
+    return answer["answer"]
 
-class State(rx.State):
+class State(pc.State):
     """The app state."""
     is_working: bool = False
     question: str = ""
     messages: list[Message] = []
     current_idx: int = 0
 
-    @rx.var
+    @pc.var
     def output(self) -> str:
         if not self.question.strip():
             return "질문을 입력해주세요."
